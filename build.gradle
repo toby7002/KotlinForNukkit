@@ -1,0 +1,53 @@
+plugins {
+    id "java"
+    id "com.diffplug.spotless" version "6.13.0"
+}
+
+version = version_major + "." + version_minor + "." + version_patch
+group = maven_group
+
+repositories {
+    maven {
+        url = "https://repo.opencollab.dev/maven-snapshots"
+    }
+    maven {
+        url = "https://repo.opencollab.dev/maven-releases"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly("cn.nukkit:nukkit:1.0-SNAPSHOT")
+}
+
+base {
+    archivesName = archives_base_name
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 8
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}"}
+    }
+}
+
+spotless {
+    java {
+        target "src/*/java/**/*.java"
+
+        endWithNewline()
+        indentWithTabs()
+        removeUnusedImports()
+        palantirJavaFormat()
+    }
+}

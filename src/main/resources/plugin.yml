@@ -1,0 +1,7 @@
+name: KotlinForNukkit
+main: com.toby7002.kotlinfornukkit.KotlinForNukkit
+version: 1.9.22
+api: ["1.0.5"]
+author: toby7002
+description: Used to develop plugins with Kotlin
+website: https://github.com/toby7002/KotlinForNukkit
