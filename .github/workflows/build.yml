@@ -25,8 +25,10 @@ jobs:
       - name: Make Gradle wrapper executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
+
       - name: Build
         run: ./gradlew build
+
       - name: Capture build artifacts
         if: ${{ runner.os == 'Linux' && matrix.java == '8' }}
         uses: actions/upload-artifact@v3
