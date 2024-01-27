@@ -48,6 +48,10 @@ shadowJar {
     archiveBaseName.set(project.archives_base_name)
     archiveClassifier.set('')
     archiveVersion.set(getVersion())
+
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}"}
+    }
 }
 
 idea {
