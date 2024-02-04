@@ -5,7 +5,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-version = version_major + "." + version_minor + "." + version_patch
+version = kotlin_version
 group = maven_group
 
 repositories {
