@@ -1,6 +1,6 @@
 name: KotlinForNukkit
 main: com.toby7002.kotlinfornukkit.KotlinForNukkit
-version: 1.9.22
+version: 1.9.23
 api: ["1.0.5"]
 load: STARTUP
 author: toby7002
