@@ -32,6 +32,13 @@ base {
     archivesName = archives_base_name
 }
 
+processResources {
+    filesMatching('**/plugin.yml') {
+        expand([
+                version: project.version
+        ])
+    }
+}
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 8
 }
