@@ -1,4 +1,4 @@
-package com.toby7002.kotlinfornukkit;
+package dev.toby7002.kotlinfornukkit;
 
 import cn.nukkit.plugin.PluginBase;
 
