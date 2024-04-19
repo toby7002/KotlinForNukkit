@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'KotlinForNukkit'
+rootProject.name = "KotlinForNukkit"
