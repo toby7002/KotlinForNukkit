@@ -17,9 +17,9 @@
 This plugin will load the Kotlin libraries inside the  server classpath in order to allow other plugins use Kotlin without shading it inside the jar file.
 
 ### Come with
-- [kotlin-reflect](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/) v1.9.23
-- [kotlin-stdlib](https://kotlinlang.org/api/latest/jvm/stdlib/) v1.9.23
-- [kotlinx-coroutines-jdk8](https://github.com/Kotlin/kotlinx.coroutines) v1.8.0
+- [kotlin-reflect](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/) v2.0.0
+- [kotlin-stdlib](https://kotlinlang.org/api/latest/jvm/stdlib/) v2.0.0
+- [kotlinx-coroutines-jdk8](https://github.com/Kotlin/kotlinx.coroutines) v1.8.1
 - [kotlinx-serialization-core](https://github.com/Kotlin/kotlinx.serialization) v1.6.3
 - [kotlinx-serialization-json](https://github.com/Kotlin/kotlinx.serialization) v1.6.3
 
