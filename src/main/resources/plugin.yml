@@ -1,8 +1,9 @@
-name: KotlinForNukkit
-main: dev.toby7002.kotlinfornukkit.KotlinForNukkit
-version: $version
+name: $project_name
+main: ${artifact_group}.KotlinForNukkit
+version: $project_version
 api: ["1.0.5"]
 load: STARTUP
-author: toby7002
-description: Used to develop plugins with Kotlin
+author: $project_author
+description: $project_description
 website: https://github.com/toby7002/KotlinForNukkit
+license: $project_license

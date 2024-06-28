@@ -1,4 +1,4 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import groovy.json.JsonSlurper
 
 plugins {
     id("java")
@@ -6,76 +6,88 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-val kotlin_version: String by project
-val maven_group: String by project
+val kotlin_version = file("generated/kotlin_version.txt").readText()
+val artifact_group: String by project
+val project_version: String by project
+val project_id: String by project
+val libVersions = JsonSlurper().parse(file("generated/library_versions.json")) as Map<*, *>
+val kotlinLib = "org.jetbrains.kotlin:kotlin-stdlib"
+val libraries = listOf(
+    kotlinLib,
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk7",
+    "org.jetbrains.kotlin:kotlin-reflect",
 
-version = kotlin_version
-group = maven_group
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8",
+    "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm",
+    "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm",
+    "org.jetbrains.kotlinx:kotlinx-serialization-cbor-jvm",
+    "org.jetbrains.kotlinx:atomicfu-jvm",
+    "org.jetbrains.kotlinx:kotlinx-datetime-jvm"
+)
+
+version = "$project_version+kotlin.$kotlin_version"
+group = artifact_group
 
 repositories {
-    maven {
-        setUrl("https://repo.opencollab.dev/maven-snapshots")
-    }
-    maven {
-        setUrl("https://repo.opencollab.dev/maven-releases")
-    }
+    maven("https://repo.opencollab.dev/maven-snapshots")
+    maven("https://repo.opencollab.dev/maven-releases")
+
     mavenCentral()
 }
 
-base { archivesName.set("kotlinfornukkit") }
+base {
+    archivesName = project_id
+}
 
 dependencies {
-    val coroutines_version: String by project
-    val serialization_version: String by project
+    val api_version: String by project
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
+    libraries.forEach {
+        implementation("$it:${libVersions[it]}")
+    }
 
-    compileOnly("cn.nukkit:nukkit:1.0-SNAPSHOT")
+    compileOnly("cn.nukkit:nukkit:$api_version")
 }
 
-tasks.processResources {
-    filesMatching("**/plugin.yml") {
-        expand(mapOf("version" to project.version))
+tasks {
+    jar {
+        enabled = false
+    }
+
+    shadowJar {
+        archiveClassifier.set("")
+        archiveBaseName.set(archiveBaseName.get())
+        archiveVersion.set(version.toString())
+    }
+    build { dependsOn(shadowJar) }
+
+    processResources {
+        val project_name: String by project
+        val project_license: String by project
+        val project_author: String by project
+        val project_description: String by project
+
+        filesMatching(listOf("plugin.yml")) {
+            expand(
+                mapOf(
+                    "project_id" to project_id,
+                    "project_name" to project_name,
+                    "project_license" to project_license,
+                    "project_version" to version,
+                    "project_author" to project_author,
+                    "project_description" to project_description,
+                    "artifact_group" to artifact_group
+                )
+            )
+        }
     }
 }
-
-tasks.withType<JavaCompile> { options.encoding = "UTF-8" }
-
-tasks.getByName<Jar>("jar") {
-    enabled = false
-}
-
-tasks.named("assemble") {
-    dependsOn("shadowJar")
-}
-
 
 java {
+    withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.named<ShadowJar>("shadowJar") {
-    archiveBaseName.set(archiveBaseName.get())
-    archiveClassifier.set("")
-    archiveVersion.set(getVersion().toString())
-
-    from("LICENSE") {
-        rename { "${it}_${archiveBaseName.get()}" }
-    }
-}
-
-spotless {
-    java {
-        target("src/*/java/**/*.java")
-
-        endWithNewline()
-        indentWithTabs()
-        removeUnusedImports()
-        palantirJavaFormat()
-    }
 }
